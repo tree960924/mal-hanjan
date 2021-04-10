@@ -1,0 +1,58 @@
+#signup_wrap h1{
+    width: 400px;
+    margin: auto;
+    margin-top:40px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+#signup_wrap form{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 450px;
+    margin: auto;
+}
+
+#signup_wrap label{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+#signup_wrap input{
+    width: 100%;
+    height: 40px;
+    padding: 10px;
+    margin: auto;
+    box-sizing: border-box;
+}
+
+#signup_wrap button{
+    width: 100%;
+    height: 50px;
+    margin: auto;
+}
+
+#signup_wrap select{
+    width: 100%;
+    height: 40px;
+    margin: auto;
+    padding-left: 10px;
+    padding-right: 20px;
+}
+
+#signup_wrap label>div{
+    display: flex;
+}
+
+#signup_wrap label>div>input:nth-child(2){
+    margin-left:10px;
+    margin-right:10px;
+}
+
+#signup_wrap .err_msg{
+    color: red;
+    font-size: 12px;
+}
