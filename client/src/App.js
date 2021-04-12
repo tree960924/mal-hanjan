@@ -5,14 +5,10 @@ function App() {
   return (
     <div>
       <Switch>
-        <Route path="/login">
-          <Login/>
-        </Route>
-        <Route path="/signup">
-          <Signup/>
-        </Route>
+        <Route path="/login"component={Login}/>
+        <Route path="/signup" component={Signup}/>
         <Route path="/">
-          <Home/>
+          Home!!
         </Route>
       </Switch>
     </div>

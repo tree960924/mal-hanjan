@@ -3,10 +3,6 @@ import {Link} from 'react-router-dom';
 import './Signup.css';
 
 class Err_msg extends Component{
-    constructor(props){
-        super(props);
-    }
-
     render(){
         if(this.props.err === undefined){
             return false;
@@ -28,9 +24,7 @@ class Signup extends Component{
             pw : '',
             pw_check : '',
             name : '',
-            year : '',
-            month : '',
-            day : '',
+            birth : '',
             gender : '',
             email : '',
             err : {}
@@ -41,29 +35,85 @@ class Signup extends Component{
         this.setState({[e.target.name] : e.target.value});
     }
 
-    signup_handle = (e) => {
+    signup_handle = async(e) => {
         e.preventDefault();
-        alert(
-            'id : '+this.state.id+'\n'+
-            'pw : '+this.state.pw+'\n'+
-            'pw_check : '+this.state.pw_check+'\n'+
-            'name : '+this.state.name+'\n'+
-            'birth : '+this.state.year+'.'+this.state.month+'.'+this.state.day+'\n'+
-            'gender : '+this.state.gender+'\n'+
-            'email : '+this.state.email+'\n'
-        );
-
         
+        let err_msg = '';
+        const field_name = {
+            id : '아이디',
+            pw : '비밀번호',
+            pw_check : '비밀번호 확인',
+            name : '이름',
+            birth : '생일',
+            gender : '성별',
+            email : '이메일'
+        }
+
+        for(let field in field_name){
+            if(this.state.err[field]){
+                err_msg += (this.state.err[field]+' - ' + field_name[field] + '\n');
+            }
+            else if(this.state.err[field] === undefined){
+                err_msg += ('아직 입력되지 않았습니다. - ' + field_name[field] + '\n');
+            }
+        }
+
+        if(err_msg !== ''){
+            alert(err_msg);
+            return;    
+        }
+
+        // 모든 필드 입력됨, pw형식 맞춰짐, pw 재확인 통과, 이메일 형식 맞음 보장
+        let url = "/api/account/new"
+        let options = {
+            method : "post",
+            headers : {
+                'Content-type' : 'application/json'
+            },
+            body : JSON.stringify({
+                id : this.state.id,
+                pw : this.state.pw,
+                name : this.state.name,
+                birth : this.state.birth,
+                gender : this.state.gender,
+                email : this.state.email
+            })
+        }
+
+        let response = await fetch(url, options);
+        console.log(response);
+
+        if(response.ok){
+            let data = await response.json();
+            if(data.result === 'succes'){
+                alert('회원가입에 성공하였습니다.');
+                this.props.history.push('/login');
+
+            }
+            else if(data.result === 'fail'){
+                alert('회원가입에 실패하였습니다.');
+                
+            }
+        }
+        else{
+            alert("HTTP error : " + response.status);
+        }
     }
 
     blur_handle = (e) => {
         let passwordRules = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
         let emailRules = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+        
+        let target_name = e.target.name;
+        // if(target_name === "year" || target_name === "month" || target_name === "day"){
+        //     target_name = "birth";
+        // }
+        
         if(e.target.value === ''){//비어있는 경우
             this.setState(prevState => ({
                 err : {
                     ...prevState.err,
-                    [e.target.name] : "필수 요소 입니다."
+                    [target_name] : "필수 요소 입니다."
                 }
             }));
         }
@@ -71,7 +121,7 @@ class Signup extends Component{
             this.setState(prevState => ({
                 err : {
                     ...prevState.err,
-                    [e.target.name] : "형식이 맞지 않습니다."
+                    [target_name] : "형식이 맞지 않습니다."
                 }
             }));
         }
@@ -79,7 +129,7 @@ class Signup extends Component{
             this.setState(prevState => ({
                 err : {
                     ...prevState.err,
-                    [e.target.name] : "위의 비밀번호와 맞지 않습니다."
+                    [target_name] : "위의 비밀번호와 맞지 않습니다."
                 }
             }));
         }
@@ -87,7 +137,7 @@ class Signup extends Component{
             this.setState(prevState => ({
                 err : {
                     ...prevState.err,
-                    [e.target.name] : "올바른 이메일 형식이 아닙니다."
+                    [target_name] : "올바른 이메일 형식이 아닙니다."
                 }
             }));
         }
@@ -95,7 +145,7 @@ class Signup extends Component{
             this.setState(prevState => ({
                 err : {
                     ...prevState.err,
-                    [e.target.name] : false
+                    [target_name] : false
                 }
             }));
         }
@@ -115,42 +165,52 @@ class Signup extends Component{
                             <input type="text" name ="id" value={this.state.id} onChange={this.change_handle} onBlur={this.blur_handle}/>
                             <Err_msg err={this.state.err.id}/>
                         </label>
+                        
                         <label>
                             패스워드 
                             <input type="password" name="pw" value={this.state.pw} onChange={this.change_handle} onBlur={this.blur_handle}/>
                             <Err_msg err={this.state.err.pw}/>
                         </label>
+                        
                         <label>
                             패스워드 확인 
                             <input type="password" name="pw_check" value={this.state.pw_check} onChange={this.change_handle} onBlur={this.blur_handle}/>
                             <Err_msg err={this.state.err.pw_check}/>
                         </label>
+                        
                         <label>
                             이름 
                             <input type="text" name="name" value={this.state.name} onChange={this.change_handle} onBlur={this.blur_handle}/>
                             <Err_msg err={this.state.err.name}/>
                         </label>
+                        
                         <label>
                             성별 
-                            <select name="gender" value={this.state.gender} onChange={this.change_handle}>
+                            <select name="gender" value={this.state.gender} onChange={this.change_handle} onBlur={this.blur_handle}>
                                 <option value=''>성별을 선택해주세요</option>
                                 <option value="male">남자</option>
                                 <option value="female">여자</option>
                             </select>
+                            <Err_msg err={this.state.err.gender}/>
                         </label>
+                        
                         <label>
-                            생년월일 
-                            <div>
-                                <input type="text" name="year" placeholder="년" value={this.state.year} onChange={this.change_handle}/>
-                                <input type="text" name="month" placeholder="월" value={this.state.month} onChange={this.change_handle}/>
-                                <input type="text" name="day" placeholder="일" value={this.state.day} onChange={this.change_handle}/>
-                            </div>
+                            생년월일
+                            <input type="date" name="birth" value={this.state.birth} onChange={this.change_handle} onBlur={this.blur_handle}/> 
+                            {/* <div>
+                                <input type="number" name="year" placeholder="년" value={this.state.year} onChange={this.change_handle} onBlur={this.blur_handle}/>
+                                <input type="number" name="month" placeholder="월" value={this.state.month} onChange={this.change_handle} onBlur={this.blur_handle}/>
+                                <input type="number" name="day" placeholder="일" value={this.state.day} onChange={this.change_handle} onBlur={this.blur_handle}/>
+                            </div> */}
+                            <Err_msg err={this.state.err.birth}/>
                         </label>
+                        
                         <label>
                             이메일 
                             <input type="text" name="email" value={this.state.email} onChange={this.change_handle} onBlur={this.blur_handle}/>
                             <Err_msg err={this.state.err.email}/>
                         </label>
+
                         <button onClick={this.signup_handle}>
                             회원가입
                         </button>
