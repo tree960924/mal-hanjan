@@ -11,9 +11,30 @@ class Login extends Component{
         }
     }
 
-    login_handle = (e) => {
+    login_handle = async(e) => {
         e.preventDefault();
-        alert(`id : ${this.state.id}, pw : ${this.state.pw}`);
+        
+        let url = `/api/account/login`;
+        let options = {
+            method : "post",
+            headers : {
+                'Content-type' : 'application/json'
+            },
+            body : JSON.stringify({
+                id : this.state.id,
+                pw : this.state.pw,
+            })
+        }
+
+        let result = await fetch(url, options);
+        result = await result.text();
+        if(result === 'success'){
+            alert('로그인 성공');
+            this.props.history.push('/home');
+        }
+        else{
+            alert('로그인 실패');
+        }
     }
 
     change_handle = (e) => {

@@ -100,7 +100,7 @@ class Signup extends Component{
         }
     }
 
-    blur_handle = (e) => {
+    blur_handle = async(e) => {
         let passwordRules = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
         let emailRules = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
         
@@ -117,6 +117,22 @@ class Signup extends Component{
                 }
             }));
         }
+
+        else if(e.target.name === 'id'){
+            let response = await fetch(`/api/account/${e.target.value}/exist`);
+            let result = await response.text();
+            let err = false;
+            if(result === 'true'){
+                err = '이미 존재하는 아이디입니다.'
+            }
+            this.setState(prevState => ({
+                err : {
+                    ...prevState.err,
+                    [target_name] : err
+                }
+            }));
+        }
+
         else if(e.target.name === 'pw' && !passwordRules.test(e.target.value)){//비밀번호 패턴이 맞지 않는 경우
             this.setState(prevState => ({
                 err : {
@@ -168,13 +184,13 @@ class Signup extends Component{
                         
                         <label>
                             패스워드 
-                            <input type="password" name="pw" value={this.state.pw} onChange={this.change_handle} onBlur={this.blur_handle}/>
+                            <input type="password" name="pw" value={this.state.pw} placeholder="8~16자, 영문,숫자,특수문자 포함" onChange={this.change_handle} onBlur={this.blur_handle}/>
                             <Err_msg err={this.state.err.pw}/>
                         </label>
                         
                         <label>
                             패스워드 확인 
-                            <input type="password" name="pw_check" value={this.state.pw_check} onChange={this.change_handle} onBlur={this.blur_handle}/>
+                            <input type="password" name="pw_check" value={this.state.pw_check} placeholder="8~16자, 영문,숫자,특수문자 포함" onChange={this.change_handle} onBlur={this.blur_handle}/>
                             <Err_msg err={this.state.err.pw_check}/>
                         </label>
                         
@@ -196,7 +212,7 @@ class Signup extends Component{
                         
                         <label>
                             생년월일
-                            <input type="date" name="birth" value={this.state.birth} onChange={this.change_handle} onBlur={this.blur_handle}/> 
+                            <input type="date" name="birth" value={this.state.bitrh} onChange={this.change_handle} onBlur={this.blur_handle}/> 
                             {/* <div>
                                 <input type="number" name="year" placeholder="년" value={this.state.year} onChange={this.change_handle} onBlur={this.blur_handle}/>
                                 <input type="number" name="month" placeholder="월" value={this.state.month} onChange={this.change_handle} onBlur={this.blur_handle}/>
