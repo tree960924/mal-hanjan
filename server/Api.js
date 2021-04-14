@@ -1,6 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const User = require('./models/User');
+const session = require('express-session');
+
+router.use(session({
+    secret: '@#@$MYSIGN#@$#$',
+    resave: false,
+    saveUninitialized: true
+}));
+
+router.get('/isLogined', (req, res)=>{
+    console.log(req.session.isLogined);
+    res.json({result : req.session.isLogined, name : req.session.user.name});
+})
 
 router.post('/account/new', async(req, res) => {//계정 생성
     await User.create(req.body)
@@ -10,8 +22,27 @@ router.post('/account/new', async(req, res) => {//계정 생성
     }).catch(function(err){
         res.json({result:'fail'});
     })
-
 })
+
+router.post('/account/login', async(req, res)=>{//로그인
+    let {id, pw} = req.body;
+    let sess = req.session;
+
+    let user_data = await User.findOne({id:id});
+
+    if(user_data === null){
+        res.send('fail');
+    } 
+    else if(user_data.pw === pw){
+        sess.user = {id : user_data._id, name : user_data.name};
+        sess.isLogined = true;
+        console.log(sess);
+        res.send('success');
+    }
+    else{
+        res.send('fail');
+    }
+});
 
 router.get('/account/:id/exist', async(req, res)=>{//아이디 존재 여부
     let user_data = await User.findOne({id:req.params.id});
@@ -22,18 +53,5 @@ router.get('/account/:id/exist', async(req, res)=>{//아이디 존재 여부
         res.send(false);
     }
 });
-
-router.post('/account/login', async(req, res)=>{//로그인
-    let {id, pw} = req.body;
-    
-    let user_data = await user_control.find(id);
-    if(user_data.pw === pw){
-        res.send('success');
-    }
-    else{
-        res.send('fail');
-    }
-});
-
 
 module.exports = router;

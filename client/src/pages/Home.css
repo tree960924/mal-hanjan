@@ -1,0 +1,16 @@
+#Home_wrap header{
+    width: 900px;
+    height: 60px;
+    line-height: 60px;
+    margin:auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+#Home_wrap #Header_wrap{
+    border-bottom: 1px solid #DBDBDB;
+}
+
+#Home_wrap header #App_name{
+    font-size: 25px;
+}

@@ -30,7 +30,7 @@ class Login extends Component{
         result = await result.text();
         if(result === 'success'){
             alert('로그인 성공');
-            this.props.history.push('/home');
+            this.props.history.push('/');
         }
         else{
             alert('로그인 실패');
