@@ -57,7 +57,8 @@ class Home extends Component{
     constructor(props){
         super(props);
         this.state={
-            selected_tag : {}
+            selected_tag : {},
+            mode:'start'
         };
     }
 
@@ -91,6 +92,14 @@ class Home extends Component{
         }
     }
 
+    start_btn_handler = (e)=>{
+        e.preventDefault();
+        let tags = [...Object.entries(this.state.selected_tag)].map(([tagName, boolean])=>{
+            if (boolean) return tagName;
+        })
+        this.props.history.push('/sayings?tags='+tags.join());
+        
+    }
     render(){
         return (
             <div id="Home_wrap">
@@ -109,9 +118,9 @@ class Home extends Component{
                         sub title
                        </div>
                        <div id="tag_select">
-                            <Tag_Select tag_list={["힘찬", "행복한", "열정 가득한", "무탈한"]} value={this.state.selected_tag} tag_select_handler={this.getSelectedTag}/>
+                            <Tag_Select tag_list={["힘찬", "행복한", "열정 가득한", "무탈한", "희망", "의지"]} value={this.state.selected_tag} tag_select_handler={this.getSelectedTag}/>
                        </div>
-                       <button id="start_btn">start!</button>
+                       <button id="start_btn" onClick={this.start_btn_handler}>start!</button>
                     </div>
                 </main>
             </div>

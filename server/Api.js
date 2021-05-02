@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('./models/User');
+const Saying = require('./models/Saying');
 const session = require('express-session');
 
 router.use(session({
@@ -11,7 +12,13 @@ router.use(session({
 
 router.get('/isLogined', (req, res)=>{
     console.log(req.session.isLogined);
-    res.json({result : req.session.isLogined, name : req.session.user.name});
+    if(req.session.isLogined){
+        res.json({result : req.session.isLogined, name : req.session.user.name});
+    }
+    else{
+        res.json({result : false, name : undefined});
+    }
+    
 })
 
 router.post('/account/new', async(req, res) => {//계정 생성
@@ -53,5 +60,13 @@ router.get('/account/:id/exist', async(req, res)=>{//아이디 존재 여부
         res.send(false);
     }
 });
+
+router.get('/sayings', async(req, res)=>{
+    let tags = req.query.tags.split(',');
+    console.log(tags);
+
+    let contents = await Saying.find({tags : {$in : tags}}); 
+    res.json(contents);
+})
 
 module.exports = router;
