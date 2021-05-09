@@ -63,7 +63,6 @@ router.get('/account/:id/exist', async(req, res)=>{//아이디 존재 여부
 
 router.get('/sayings', async(req, res)=>{
     let tags = req.query.tags.split(',');
-    console.log(tags);
 
     let contents = await Saying.find({tags : {$in : tags}}); 
     res.json(contents);
