@@ -34,3 +34,18 @@
     height: 50px;
     margin: auto;
 }
+
+#login_wrap nav{
+    width: 450px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+#login_wrap nav a{
+    padding : 0px 10px;
+    border-right: 1px solid gray;
+}
+#login_wrap nav a:last-child{
+    border:none;
+}

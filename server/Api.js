@@ -68,4 +68,13 @@ router.get('/sayings', async(req, res)=>{
     res.json(contents);
 })
 
+router.post('/comment/new', async(req, res)=>{
+    let sess = req.session;
+   
+    let {saying_id, content} = req.body;
+    let saying = await Saying.findOne({_id:saying_id});
+
+    saying.addComment(content, sess.user.id);
+})
+
 module.exports = router;

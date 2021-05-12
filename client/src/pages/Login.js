@@ -62,6 +62,11 @@ class Login extends Component{
                             로그인
                         </button>
                     </form>
+                    <nav>
+                        <a href="#">아이디 찾기</a>
+                        <a href="#">비밀번호 찾기</a>
+                        <Link to='/signup'>회원가입</Link>
+                    </nav>
                 </main>
 
                 <footer>

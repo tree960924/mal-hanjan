@@ -10,7 +10,7 @@ const speakerSchema = new mongoose.Schema({
 const commentSchema = new mongoose.Schema({
     content : {type : String, requierd:true},
     user_id : {type : String},
-    date : {type:Date}
+    date : {type:Date, default:Date.now}
 })
 
 const sayingSchema = new mongoose.Schema({
@@ -21,5 +21,9 @@ const sayingSchema = new mongoose.Schema({
     comments : [commentSchema]
 })
 
+sayingSchema.methods.addComment = function(content, user_id){
+    this.comments.push({"content" : content, "user_id" : user_id});
+    return this.save();
+}
 
 module.exports = mongoose.model('Saying', sayingSchema);
