@@ -75,6 +75,7 @@ router.post('/comment/new', async(req, res)=>{
     let saying = await Saying.findOne({_id:saying_id});
 
     saying.addComment(content, sess.user.id);
+    res.json(saying);
 })
 
 module.exports = router;

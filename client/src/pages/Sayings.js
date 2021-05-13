@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom'; 
 import {Header} from '../components';
 import './Sayings.css';
 
@@ -21,7 +20,7 @@ class SayingForm extends Component{
         }
     }
 
-    comment_btn_handler = (e) => {
+    comment_btn_handler = async(e) => {
         let url = '/api/comment/new'
         let options = {
             method : "post",
@@ -34,7 +33,15 @@ class SayingForm extends Component{
             })
         }
         
-        fetch(url, options);    
+        let res = await fetch(url, options);
+        let content = await res.json();
+        this.props.contentChange(content, e.target.dataset.index*1);
+        this.setState(({comments})=>({
+            comments : {
+                ...comments,
+                [e.target.name] : ""
+            }
+        }));
     }
 
     comment_input_handler = (e)=>{
@@ -47,7 +54,7 @@ class SayingForm extends Component{
     }
 
     render(){
-        return this.props.contents.map(content =>
+        return this.props.contents.map((content, index) =>
             <div className="content_contatiner">
                <div className="saying">
                     {content.sentence}<br/>
@@ -56,8 +63,8 @@ class SayingForm extends Component{
                </div>
                {this.props.isLogined &&
                     <div className="comment_input" hidden={true}>
-                        <input type="text" placeholder="자신만의 조언을 추가해주세요" name={content._id} onChange={this.comment_input_handler}/>
-                        <button name={content._id} onClick={this.comment_btn_handler}>제출</button>
+                        <input type="text" value={this.state.comments[content._id]} placeholder="자신만의 조언을 추가해주세요" name={content._id} onChange={this.comment_input_handler}/>
+                        <button name={content._id} data-index={index} onClick={this.comment_btn_handler}>제출</button>
                     </div>
                }
                {content.comments.length !== 0 &&
@@ -105,13 +112,23 @@ class Sayings extends Component{
         })
     }
 
-
+    contentChange = (content, index)=>{
+        console.log(index);
+        console.log(index+1);
+        this.setState(({contents})=>({
+            "contents" : [
+                ...contents.slice(0, index),
+                {...content},
+                ...contents.slice(index+1)
+            ]
+        }))
+    }
 
     render(){
         return (
             <div>
                 <Header/>
-                <SayingForm isLogined={this.state.isLogined} contents={this.state.contents}/>
+                <SayingForm isLogined={this.state.isLogined} contents={this.state.contents} contentChange={this.contentChange}/>
             </div>
         )
     }
