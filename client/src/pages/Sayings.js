@@ -3,11 +3,18 @@ import {Header} from '../components';
 import './Sayings.css';
 
 class CommentForm extends Component{
+    comment_like_btn_handler = (e) =>{
+        e.target.dataset.liked = !JSON.parse(e.target.dataset.liked);
+    }
+
     render(){
         return this.props.comments.map((comment) => 
         <div className="comment">
             <div>{comment.content}</div>
-            <div>{comment.date}</div>
+            <div className="comment_sub">
+                <div className="comment_date">{comment.date.match(/\d{4}-\d{2}-\d{2}/)}</div>
+                <button className="comment_like_btn" data-liked="false" onClick={this.comment_like_btn_handler}/>
+            </div>
         </div>)
     }
 }
@@ -55,7 +62,7 @@ class SayingForm extends Component{
 
     render(){
         return this.props.contents.map((content, index) =>
-            <div className="content_contatiner">
+            <div className="saying_contatiner">
                <div className="saying">
                     {content.sentence}<br/>
                     {content.speaker.name !== "" && '-'+content.speaker.name+'-'}
@@ -64,7 +71,7 @@ class SayingForm extends Component{
                {this.props.isLogined &&
                     <div className="comment_input" hidden={true}>
                         <input type="text" value={this.state.comments[content._id]} placeholder="자신만의 조언을 추가해주세요" name={content._id} onChange={this.comment_input_handler}/>
-                        <button name={content._id} data-index={index} onClick={this.comment_btn_handler}>제출</button>
+                        <button name={content._id} data-index={index} onClick={this.comment_btn_handler}>게시</button>
                     </div>
                }
                {content.comments.length !== 0 &&
@@ -126,9 +133,11 @@ class Sayings extends Component{
 
     render(){
         return (
-            <div>
+            <div id="saying_page">
                 <Header/>
-                <SayingForm isLogined={this.state.isLogined} contents={this.state.contents} contentChange={this.contentChange}/>
+                <main>
+                    <SayingForm isLogined={this.state.isLogined} contents={this.state.contents} contentChange={this.contentChange}/>
+                </main>
             </div>
         )
     }
